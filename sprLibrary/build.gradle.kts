@@ -1,11 +1,12 @@
 import org.jetbrains.compose.ExperimentalComposeLibrary
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
+import org.jetbrains.kotlin.gradle.targets.js.dsl.ExperimentalWasmDsl
 
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
-    alias(libs.plugins.androidApplication)
+    alias(libs.plugins.androidLibrary)
     alias(libs.plugins.jetbrainsCompose)
-    alias(libs.plugins.kobweb.application)
+    alias(libs.plugins.kobweb.library)
 }
 
 kotlin {
@@ -13,7 +14,7 @@ kotlin {
         browser()
         binaries.executable()
     }
-    
+
     androidTarget {
         compilations.all {
             kotlinOptions {
@@ -21,24 +22,23 @@ kotlin {
             }
         }
     }
-    
+
     jvm("desktop")
-    
+
     listOf(
         iosX64(),
         iosArm64(),
         iosSimulatorArm64()
     ).forEach { iosTarget ->
         iosTarget.binaries.framework {
-            baseName = "DemoApp"
             isStatic = true
         }
     }
-    
+
     sourceSets {
         val jsMain by getting
         val desktopMain by getting
-        
+
         androidMain.dependencies {
             implementation(libs.compose.ui.tooling.preview)
             implementation(libs.androidx.activity.compose)
@@ -55,17 +55,13 @@ kotlin {
             implementation(compose.desktop.currentOs)
         }
         jsMain.dependencies {
-            //implementation(libs.kobweb.api)
-            implementation(libs.kobweb.core)
-            implementation(libs.kobweb.compose)
-            implementation(libs.kobweb.silk.core)
-            implementation(compose.html.core)
+            implementation(compose.runtime)
         }
     }
 }
 
 android {
-    namespace = "org.compose.shapeshifter"
+    namespace = "org.compose.shapeshifter.library"
     compileSdk = libs.versions.android.compileSdk.get().toInt()
 
     sourceSets["main"].manifest.srcFile("src/androidMain/AndroidManifest.xml")
@@ -73,11 +69,8 @@ android {
     sourceSets["main"].resources.srcDirs("src/commonMain/resources")
 
     defaultConfig {
-        applicationId = "org.compose.shapeshifter"
         minSdk = libs.versions.android.minSdk.get().toInt()
         targetSdk = libs.versions.android.targetSdk.get().toInt()
-        versionCode = 1
-        versionName = "1.0"
     }
     packaging {
         resources {
@@ -104,7 +97,7 @@ compose.desktop {
 
         nativeDistributions {
             targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
-            packageName = "org.compose.shapeshifter"
+            packageName = "org.compose.shapeshifter.library"
             packageVersion = "1.0.0"
         }
     }

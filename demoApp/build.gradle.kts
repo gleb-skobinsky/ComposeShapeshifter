@@ -11,10 +11,10 @@ plugins {
 kotlin {
     @OptIn(ExperimentalWasmDsl::class)
     wasmJs {
-        moduleName = "composeApp"
+        moduleName = "demoApp"
         browser {
             commonWebpackConfig {
-                outputFileName = "composeApp.js"
+                outputFileName = "demoApp.js"
             }
         }
         binaries.executable()
@@ -36,7 +36,7 @@ kotlin {
         iosSimulatorArm64()
     ).forEach { iosTarget ->
         iosTarget.binaries.framework {
-            baseName = "ComposeApp"
+            baseName = "DemoApp"
             isStatic = true
         }
     }

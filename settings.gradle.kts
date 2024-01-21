@@ -19,3 +19,4 @@ dependencyResolutionManagement {
 }
 
 include(":demoApp")
+include(":gradlePlugin")
